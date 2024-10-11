@@ -11,7 +11,8 @@ public class Conexao
     private Connection connect;
     private String erro;
     public Conexao()
-    {   erro="";
+    {
+        erro="";
         connect=null;
     }
     public boolean conectar(String local,String banco,String usuario,String senha)

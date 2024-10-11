@@ -8,7 +8,7 @@ public class SingletonDB {
     public static boolean conectar() {
         conexao = new Conexao();
         return conexao.conectar("jdbc:postgresql://localhost/","botecodb",
-                               "postgres", "postgres123");
+                               "postgres", "arcesti123");
     }
     public static Conexao getConexao() {
         return conexao;
