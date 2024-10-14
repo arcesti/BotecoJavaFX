@@ -15,9 +15,13 @@ public class ProdutoDAL implements IDAL<Produto> {
     @Override
     public boolean gravar(Produto entidade) {
         String sql = """
-                INSERT INTO produto(prod_nome) VALUES('#1');
+                INSERT INTO produto(cat_id, uni_id, prod_nome, prod_preco, prod_descr) VALUES(#1, #2, '#3', #4, '#5');
                 """;
-        sql = sql.replace("#1", entidade.getNome());
+        sql = sql.replace("#1","" + entidade.getCategoria().getId());
+        sql = sql.replace("#2", "" + entidade.getUnidade().getId());
+        sql = sql.replace("#3", entidade.getNome());
+        sql = sql.replace("#4", ""+entidade.getPreco());
+        sql = sql.replace("#5", entidade.getDescr());
         return SingletonDB.getConexao().manipular(sql);
     }
 
@@ -25,10 +29,14 @@ public class ProdutoDAL implements IDAL<Produto> {
     public boolean alterar(Produto entidade) {
         String sql = """
                 UPDATE produto SET prod_nome='#1'
-                        WHERE prod_id=#2;
+                                   prod_descr='#2'
+                                   prod_preco=#3
+                        WHERE prod_id=#4;
                 """;
         sql = sql.replace("#1", entidade.getNome());
-        sql = sql.replace("#2","" + entidade.getId());
+        sql = sql.replace("#2", entidade.getDescr());
+        sql = sql.replace("#3", ""+entidade.getPreco());
+        sql = sql.replace("#4","" + entidade.getId());
         return SingletonDB.getConexao().manipular(sql);
     }
 
@@ -65,14 +73,14 @@ public class ProdutoDAL implements IDAL<Produto> {
     @Override
     public List<Produto> get(String filtro) {
         List<Produto> produtos = new ArrayList<>();
-        String sql = "SELECT * FROM produto";
+        String sql = "SELECT * FROM produto ";
         if (!filtro.isEmpty()) {
             sql += "WHERE " + filtro;
         }
         sql+=" ORDER BY prod_nome";
         ResultSet resultSet = SingletonDB.getConexao().consultar(sql);
         try {
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 Categoria categoria = getCategoriaById(resultSet.getInt("cat_id"));
                 Unidade unidade = getUnidadeById(resultSet.getInt("uni_id"));
                 produtos.add(new Produto(resultSet.getInt("prod_id"),
@@ -94,7 +102,7 @@ public class ProdutoDAL implements IDAL<Produto> {
         Unidade uni = null;
         try {
             if(resultSet.next()) {
-                uni = new Unidade(resultSet.getInt("uni_id"), resultSet.getString("uni_nom"));
+                uni = new Unidade(resultSet.getInt("uni_id"), resultSet.getString("uni_nome"));
             }
         } catch (Exception e) {
             e.printStackTrace();

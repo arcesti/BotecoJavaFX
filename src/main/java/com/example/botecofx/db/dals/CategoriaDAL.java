@@ -60,7 +60,7 @@ public class CategoriaDAL implements IDAL <Categoria>{
         sql+=" ORDER BY cat_nome";
         ResultSet resultSet = SingletonDB.getConexao().consultar(sql);
         try {
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 categorias.add(new Categoria(resultSet.getInt("cat_id"), resultSet.getString("cat_nome")));
             }
         } catch (Exception e) {
