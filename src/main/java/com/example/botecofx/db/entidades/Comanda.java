@@ -102,7 +102,7 @@ public class Comanda {
     public boolean addPagamento(TipoPagamento tipoPagamento, double valor) {
         return pagamentos.add(new Pagamento(valor, tipoPagamento));
     }
-    public boolean addItem(Produto produto, int quant) {
-        return itens.add(new Item(produto, quant,produto.getPreco()));
+    public boolean addItem(Item item) {
+        return itens.add(item);
     }
 }
