@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class BotecoFX extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(BotecoFX.class.getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(BotecoFX.class.getResource("adm-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("Hello!");
         stage.setScene(scene);

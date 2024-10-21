@@ -6,7 +6,6 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.botecofx.AdmController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
@@ -17,7 +16,7 @@
                   <MenuItem mnemonicParsing="false" text="_CATEGORIA" />
                   <MenuItem mnemonicParsing="false" text="_UNIDADE" />
                   <MenuItem mnemonicParsing="false" text="_TIPO DE PAGAMENTO" />
-                  <MenuItem mnemonicParsing="false" text="_GARCOM" />
+                  <MenuItem mnemonicParsing="false" onAction="#onCadGarcom" text="_GARCOM..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="_FECHAR" />
             </items>
