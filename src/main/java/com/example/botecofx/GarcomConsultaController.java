@@ -103,5 +103,6 @@ public class GarcomConsultaController implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         tfFiltro.setText("");
         stage.showAndWait();
+        preencherTabela("");
     }
 }

@@ -5,15 +5,16 @@ import com.example.botecofx.db.entidades.Unidade;
 import com.example.botecofx.db.util.IDAL;
 import com.example.botecofx.db.util.SingletonDB;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GarcomDAL implements IDAL <Garcom> {
-    @Override
-    public boolean gravar(Garcom entidade) {
+
+    public boolean gravar(Garcom entidade, File foto) {
         String sql = """
-                    INSERT INTO garcon(gar_nome, gar_cpf, gar_cep, gar_endereco, gar_cidade, gar_uf, gar_fone) VALUES ('#1','#2','#3','#4','#5','#6','#7')
+                    INSERT INTO garcon(gar_nome, gar_cpf, gar_cep, gar_endereco, gar_cidade, gar_uf, gar_fone, gar_numero) VALUES ('#1','#2','#3','#4','#5','#6','#7', '#8')
                 """;
         sql = sql.replace("#1", entidade.getNome());
         sql = sql.replace("#2", entidade.getCpf());
@@ -22,7 +23,24 @@ public class GarcomDAL implements IDAL <Garcom> {
         sql = sql.replace("#5", entidade.getCidade());
         sql = sql.replace("#6", entidade.getUf());
         sql = sql.replace("#7", entidade.getFone());
-        return SingletonDB.getConexao().manipular(sql);
+        sql = sql.replace("#8", entidade.getNumero());
+
+        if(SingletonDB.getConexao().manipular(sql)) {
+            if(foto!=null) {
+                int id = SingletonDB.getConexao().getMaxPK("garcon", "gar_id");
+                if(SingletonDB.getConexao().gravarImagem(foto,"garcon", "gar_foto", "gar_id", id)) {
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean gravar(Garcom entidade) {
+        return false;
     }
 
     @Override
