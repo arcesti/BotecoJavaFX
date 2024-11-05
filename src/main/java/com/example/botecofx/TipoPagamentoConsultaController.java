@@ -1,7 +1,7 @@
 package com.example.botecofx;
 
 import com.example.botecofx.db.dals.TipoPagamentoDAL;
-import com.example.botecofx.db.entidades.Garcon;
+import com.example.botecofx.db.entidades.Garcom;
 import com.example.botecofx.db.entidades.TipoPagamento;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
