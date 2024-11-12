@@ -93,5 +93,4 @@ public class ComandaFormController {
         produto = (Produto)modalTable.getSelecionado();
         btProduto.setText(produto.toString());
     }
-
 }
