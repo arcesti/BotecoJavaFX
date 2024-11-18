@@ -7,6 +7,7 @@ module com.example.botecofx {
     requires java.logging;
     requires org.json;
     requires javafx.swing;
+    requires jasperreports;
 
 
     opens com.example.botecofx to javafx.fxml;

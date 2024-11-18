@@ -23,7 +23,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="_RELATORIOS">
             <items>
-              <MenuItem mnemonicParsing="false" text="_LISTA DE PREÇOS" />
+              <MenuItem mnemonicParsing="false" onAction="#onRelListaPreco" text="_LISTA DE PREÇOS" />
+                  <MenuItem mnemonicParsing="false" onAction="#onRelProdutos" text="_RELAÇÃO DE PRODUTOS" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="_SISTEMA">
