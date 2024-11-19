@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -14,6 +15,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
 
+import javax.swing.*;
+import java.io.File;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.util.Map;
@@ -62,5 +65,31 @@ public class AdmController implements Initializable {
         } catch (JRException erro)
         {  erro.printStackTrace(); }
 
+    }
+
+    public void onBackup(ActionEvent actionEvent) {
+        try {
+            SingletonDB.backup("botecodbBck.backup", "botecodb");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro: " + e);
+        }
+    }
+
+    public void onRestore(ActionEvent actionEvent) {
+        try {
+            SingletonDB.restaurar("botecodbRes.backup", "botecodb");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro: " + e);
+        }
+    }
+
+    public void onAjuda(ActionEvent actionEvent) {
+        WebView webView = new WebView();
+        webView.setPrefSize(800,600);
+        File file = new File("help/ajuda.html");
+        webView.getEngine().load(file.toURI().toString());
+        Stage stage = new Stage();
+        stage.setScene(new Scene(webView));
+        stage.showAndWait();
     }
 }

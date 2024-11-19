@@ -8,6 +8,7 @@ module com.example.botecofx {
     requires org.json;
     requires javafx.swing;
     requires jasperreports;
+    requires javafx.web;
 
 
     opens com.example.botecofx to javafx.fxml;
