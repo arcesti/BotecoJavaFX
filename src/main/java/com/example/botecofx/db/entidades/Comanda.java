@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Comanda {
-    public static record Item(Produto produto, int quant, double valor){};
+    public static record Item(Produto produto, int quant){};
     private int id;
     private int numero;
     private String descricao;

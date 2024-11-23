@@ -136,7 +136,7 @@ public class ComandaDAL implements IDAL<Comanda> {
                 ResultSet rs2 = SingletonDB.getConexao().consultar(sql);
                 while(rs2.next()) {
                     Comanda.Item item = new Comanda.Item(new ProdutoDAL().get(rs2.getInt("prod_id")),
-                                        rs2.getInt("it_quantidade"),rs2.getDouble("it_valor"));
+                                        rs2.getInt("it_quantidade"));
                     comanda.addItem(item);
                 }
             }
@@ -150,9 +150,9 @@ public class ComandaDAL implements IDAL<Comanda> {
     public List<Comanda> get(String filtro) {
         List<Comanda> comandas = new ArrayList<>();
         Comanda comanda = null;
-        String sql = "SELECT * FROM comanda WHERE com_id = ";
+        String sql = "SELECT * FROM comanda ORDER BY com_numero";
         if(!filtro.isEmpty()) {
-            sql+=" WHERE " + filtro;
+            sql+=" WHERE com_id = " + filtro;
         }
         ResultSet resultSet = SingletonDB.getConexao().consultar(sql);
         try {
@@ -165,11 +165,11 @@ public class ComandaDAL implements IDAL<Comanda> {
                         resultSet.getString("com_status").charAt(0),
                         new GarcomDAL().get(resultSet.getInt("gar_id"))
                 );
-                sql = "SELECT * FROM item WHERE com_id = ";
+                sql = "SELECT * FROM item WHERE com_id = " + comanda.getId();
                 ResultSet rs2 = SingletonDB.getConexao().consultar(sql);
                 while(rs2.next()) {
                     Comanda.Item item = new Comanda.Item(new ProdutoDAL().get(rs2.getInt("prod_id")),
-                            rs2.getInt("it_quantidade"),rs2.getDouble("it_valor"));
+                            rs2.getInt("it_quantidade"));
                     comanda.addItem(item);
                 }
                 comandas.add(comanda);

@@ -12,13 +12,13 @@
         <menus>
           <Menu mnemonicParsing="false" text="_CADASTROS">
             <items>
-              <MenuItem mnemonicParsing="false" text="_PRODUTO" />
-                  <MenuItem mnemonicParsing="false" text="_CATEGORIA" />
-                  <MenuItem mnemonicParsing="false" text="_UNIDADE" />
-                  <MenuItem mnemonicParsing="false" text="_TIPO DE PAGAMENTO" />
+              <MenuItem mnemonicParsing="false" onAction="#onCadProduto" text="_PRODUTO" />
+                  <MenuItem mnemonicParsing="false" onAction="#onCadCategoria" text="_CATEGORIA" />
+                  <MenuItem mnemonicParsing="false" onAction="#onCadUnidade" text="_UNIDADE" />
+                  <MenuItem mnemonicParsing="false" onAction="#onCadTpPagamento" text="_TIPO DE PAGAMENTO" />
                   <MenuItem mnemonicParsing="false" onAction="#onCadGarcom" text="_GARCOM..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="_FECHAR" />
+                  <MenuItem mnemonicParsing="false" onAction="#onFechar" text="_FECHAR" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="_RELATORIOS">

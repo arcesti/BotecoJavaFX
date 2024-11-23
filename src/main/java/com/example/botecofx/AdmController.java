@@ -1,6 +1,7 @@
 package com.example.botecofx;
 
 import com.example.botecofx.db.util.SingletonDB;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,6 +29,46 @@ public class AdmController implements Initializable {
 
     }
 
+    public void onCadTpPagamento(ActionEvent actionEvent) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(BotecoFX.class.getResource("tipopagamento-consulta-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.showAndWait();
+    }
+
+    public void onCadUnidade(ActionEvent actionEvent) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(BotecoFX.class.getResource("unidade-consulta-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.showAndWait();
+    }
+
+    public void onCadCategoria(ActionEvent actionEvent) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(BotecoFX.class.getResource("categoria-consulta-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.showAndWait();
+    }
+
+    public void onCadProduto(ActionEvent actionEvent) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(BotecoFX.class.getResource("produto-consulta-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.showAndWait();
+    }
+
     public void onCadGarcom(ActionEvent actionEvent) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(BotecoFX.class.getResource("garcom-consulta-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -45,7 +86,7 @@ public class AdmController implements Initializable {
 
     public void onRelProdutos(ActionEvent actionEvent) {
         String sql = "SELECT * FROM produto, categoria WHERE produto.cat_id = categoria.cat_id order by prod_nome";
-        gerarRelatorio(sql, "reports/rel_produtos.jasper", "Relação simples de produtos");
+        gerarRelatorio(sql, "reports\rel_produtos.jasper", "Relação simples de produtos");
     }
 
     private void gerarRelatorio(String sql,String relat, String titulo)
@@ -91,5 +132,9 @@ public class AdmController implements Initializable {
         Stage stage = new Stage();
         stage.setScene(new Scene(webView));
         stage.showAndWait();
+    }
+
+    public void onFechar(ActionEvent actionEvent) {
+        Platform.exit();
     }
 }

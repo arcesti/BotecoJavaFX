@@ -108,7 +108,6 @@ public class ComandaFormController {
     private void gerarRelatorioSubReport(String relat, String titulotela, Map parametros)
     {
         try {
-
             JasperPrint jasperPrint = JasperFillManager.fillReport(relat, parametros,
                     SingletonDB.getConexao().getConnect());
             JasperViewer viewer = new JasperViewer(jasperPrint,false);
