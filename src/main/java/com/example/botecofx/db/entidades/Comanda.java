@@ -100,9 +100,18 @@ public class Comanda {
         return itens;
     }
     public boolean addPagamento(TipoPagamento tipoPagamento, double valor) {
-        return pagamentos.add(new Pagamento(valor, tipoPagamento));
+        return pagamentos.add(new Pagamento(valor, tipoPagamento, null));
     }
+
+    public void delItens() {
+        itens.clear();
+    }
+
     public boolean addItem(Item item) {
         return itens.add(item);
+    }
+
+    public String toString() {
+        return itens.toString();
     }
 }

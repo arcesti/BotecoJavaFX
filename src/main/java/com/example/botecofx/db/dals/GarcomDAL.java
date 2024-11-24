@@ -68,7 +68,7 @@ public class GarcomDAL implements IDAL <Garcom> {
 
     @Override
     public boolean apagar(Garcom entidade) {
-        return SingletonDB.getConexao().manipular("DELETE FROM garcon WHERE garcon_id = " + entidade.getId());
+        return SingletonDB.getConexao().manipular("DELETE FROM garcon WHERE gar_id = " + entidade.getId());
     }
 
     @Override

@@ -32,8 +32,8 @@ public class ComandaDAL implements IDAL<Comanda> {
                 for (Comanda.Item item : entidade.getItens()) {
                     sql = """
                              INSERT INTO item(
-                             	com_id, prod_id, it_quantidade, it_valor)
-                             	VALUES (#1, #2, #3, #4); 
+                             	com_id, prod_id, it_quantidade)
+                             	VALUES (#1, #2, #3);
                             """;
                     sql = sql.replace("#1", "" + id);
                     sql = sql.replace("#2", "" + item.produto().getId());
@@ -63,32 +63,30 @@ public class ComandaDAL implements IDAL<Comanda> {
         try {
             SingletonDB.getConexao().getConnect().setAutoCommit(false);
             String sql = """
-                    UPDATE comanda
-                    	SET gar_id=#1, com_numero=#2, com_data='#3', com_desc='#4', com_valor=#5, com_status='#6'
-                    	WHERE com_id=#7;
+                    UPDATE comanda SET gar_id=#1, com_numero=#2, com_data='#3', com_desc='#4', com_valor=#5, com_status='#6' WHERE com_id=#7;
                     """;
             sql = sql.replace("#1", "" + entidade.getGarcom().getId());
             sql = sql.replace("#2", "" + entidade.getNumero());
             sql = sql.replace("#3", "" + entidade.getData());
             sql = sql.replace("#4", entidade.getDescricao());
-            sql = sql.replace("#5", String.format("%.2f", entidade.getValor()));
+            sql = sql.replace("#5", String.format("%.2f", entidade.getValor()).replace(',', '.'));
             sql = sql.replace("#6", "" + entidade.getStatus());
             sql = sql.replace("#7", "" + entidade.getId());
             if (SingletonDB.getConexao().manipular(sql)) {
                 //Apagar os itens
-                if(SingletonDB.getConexao().manipular("DELETE FROM item WHERE com_id = " + entidade.getId())) {
+                if(!SingletonDB.getConexao().manipular("DELETE FROM item WHERE com_id = " + entidade.getId())) {
                     erro = true;
                 }
                 for (Comanda.Item item : entidade.getItens()) {
+                    System.out.println(item);
                     sql = """
                              INSERT INTO item(
-                             	com_id, prod_id, it_quantidade, it_valor)
-                             	VALUES (#1, #2, #3, #4); 
+                             	com_id, prod_id, it_quantidade)
+                             	VALUES (#1, #2, #3);
                             """;
                     sql = sql.replace("#1", "" + entidade.getId());
                     sql = sql.replace("#2", "" + item.produto().getId());
                     sql = sql.replace("#3", "" + item.quant());
-                    sql = sql.replace("#4", "" + item.produto().getPreco());
                     if (!SingletonDB.getConexao().manipular(sql)) {
                         erro = true;
                     }
@@ -103,7 +101,9 @@ public class ComandaDAL implements IDAL<Comanda> {
                 SingletonDB.getConexao().getConnect().rollback();
             }
             SingletonDB.getConexao().getConnect().setAutoCommit(true);
-        } catch (Exception e){}
+        } catch (Exception e){
+            System.out.println(e);
+        }
         return erro;
     }
 

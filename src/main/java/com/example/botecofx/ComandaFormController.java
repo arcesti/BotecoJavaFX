@@ -1,12 +1,12 @@
 package com.example.botecofx;
 
-import com.example.botecofx.db.dals.ProdutoDAL;
-import com.example.botecofx.db.entidades.Comanda;
-import com.example.botecofx.db.entidades.Garcom;
-import com.example.botecofx.db.entidades.Produto;
-import com.example.botecofx.db.entidades.TipoPagamento;
+import com.example.botecofx.db.dals.*;
+import com.example.botecofx.db.entidades.*;
 import com.example.botecofx.db.util.SingletonDB;
 import com.example.botecofx.util.ModalTable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -19,8 +19,12 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
 
+import javax.swing.*;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class ComandaFormController {
 
@@ -56,16 +60,36 @@ public class ComandaFormController {
     private TableView<Comanda.Item> tableView;
 
     @FXML
-    private TextField tfNome;
-
-    @FXML
     private TextField tfNumero;
+
+    private Comanda comanda;
+
+    private ObservableList<Comanda.Item> itemLista = FXCollections.observableArrayList();
 
     Produto produto = null;
 
+    double valorPago = 0;
+
     @FXML
     void onAdd(ActionEvent event) {
+        if(produto != null && spQuant.getValue() != 0) {
+            Comanda.Item item = new Comanda.Item(produto, spQuant.getValue());
+            boolean itemExiste = false;
+            for (int i = 0; i < itemLista.size(); i++) {
+                if(tableView.getItems().get(i).produto().getId() == produto.getId()) {
+                    Comanda.Item itemAtt = tableView.getItems().get(i);
+                    itemLista.set(i, new Comanda.Item(produto, itemAtt.quant() + spQuant.getValue()));
+                    itemExiste = true;
+                }
+            }
+            if(!itemExiste) {
+                itemLista.add(item);
+            }
 
+            spQuant.getValueFactory().setValue(0);
+            setValorComanda();
+            //new ComandaPainelController().carregarComandas();
+        }
     }
 
     @FXML
@@ -75,7 +99,12 @@ public class ComandaFormController {
 
     @FXML
     void onConfirmar(ActionEvent event) {
-
+        ComandaDAL cmdDal = new ComandaDAL();
+        comanda.delItens();
+        for(Comanda.Item item:itemLista) {
+            comanda.addItem(item);
+        }
+        cmdDal.alterar(comanda);
     }
 
     @FXML
@@ -88,7 +117,7 @@ public class ComandaFormController {
         int comandaId = ComandaController.id;
         HashMap hashMap = new HashMap();
         hashMap.put("comanda_id", comandaId);
-        gerarRelatorioSubReport("reports/comandaPrint.jasper", "Comanda", hashMap);
+        gerarRelatorioSubReport("reports/comanda_print.jasper", "Comanda", hashMap);
     }
 
     @FXML
@@ -117,6 +146,63 @@ public class ComandaFormController {
             viewer.setVisible(true);
         } catch (JRException erro) {
             System.out.println(erro);
+        }
+    }
+
+    public void alterSpinner() {
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0);
+        spQuant.setValueFactory(valueFactory);
+        spQuant.valueProperty().addListener((obs, oldValue, newValue) -> {
+        });
+    }
+
+    public void setValorComanda() {
+        double valor = 0;
+        for(Comanda.Item val:itemLista) {
+            valor += val.quant()*val.produto().getPreco();
+        }
+        lbValor.setText(""+valor);
+        comanda.setValor(valor - valorPago);
+    }
+
+    public void carregarComanda(int comandaId) {
+        comanda = new ComandaDAL().get(comandaId);
+        Garcom garcom = new GarcomDAL().get(comanda.getGarcom().getId());
+        cbGarcom.getItems().add(garcom);
+        cbGarcom.setValue(garcom);
+        // Define o intervalo (mínimo, máximo e valor inicial) do Spinner
+        alterSpinner();
+        colProduto.setCellValueFactory(valCol -> new SimpleStringProperty(valCol.getValue().produto().getNome()));
+        colQuant.setCellValueFactory(valCol -> new SimpleStringProperty(""+valCol.getValue().quant()));
+        colValor.setCellValueFactory(valCol -> new SimpleStringProperty(""+valCol.getValue().quant() * valCol.getValue().produto().getPreco()));
+        itemLista.addAll(comanda.getItens());
+        tableView.setItems(itemLista);
+        cbTipoPagamento.getItems().addAll(new TipoPagamentoDAL().get(""));
+        dpData.setValue(comanda.getData());
+        tfNumero.setText(comanda.getNumero() + "");
+        taDesc.setText(comanda.getDescricao());
+        setValorComanda();
+    }
+
+    public void onPagar(ActionEvent actionEvent) {
+        if(cbTipoPagamento.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText("Selecione uma forma de pagamento");
+            alert.showAndWait();
+        }
+        else {
+            String pagamento = JOptionPane.showInputDialog(null, "Informe o valor do pagamento:");
+            if (pagamento != null) {
+                double valor = Double.parseDouble(pagamento);
+                Pagamento pag = new Pagamento(valor, cbTipoPagamento.getValue(), comanda);
+                new PagamentoDAL().gravar(pag);
+                valorPago = pag.getValor();
+                setValorComanda();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setHeaderText("Pagamento cancelado!");
+                alert.showAndWait();
+            }
         }
     }
 }

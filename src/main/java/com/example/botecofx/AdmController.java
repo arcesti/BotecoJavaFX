@@ -86,7 +86,7 @@ public class AdmController implements Initializable {
 
     public void onRelProdutos(ActionEvent actionEvent) {
         String sql = "SELECT * FROM produto, categoria WHERE produto.cat_id = categoria.cat_id order by prod_nome";
-        gerarRelatorio(sql, "reports\rel_produtos.jasper", "Relação simples de produtos");
+        gerarRelatorio(sql, "reports/rel_produtos.jasper", "Relação simples de produtos");
     }
 
     private void gerarRelatorio(String sql,String relat, String titulo)

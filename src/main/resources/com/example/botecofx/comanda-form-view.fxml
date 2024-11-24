@@ -15,11 +15,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox prefHeight="600.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.botecofx.ComandaFormController">
    <children>
       <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="750.0" spacing="10.0" style="-fx-background-color: gray;">
          <children>
+            <Button layoutX="520.0" layoutY="16.0" mnemonicParsing="false" onAction="#onPagar" prefWidth="70.0" style="-fx-background-color: beige;" text="Pagar" />
             <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onImprimir" prefWidth="70.0" style="-fx-background-color: beige;" text="Imprimir" />
             <Button layoutX="646.0" layoutY="16.0" mnemonicParsing="false" onAction="#onConfirmar" prefWidth="70.0" style="-fx-background-color: beige;" text="Confirmar" />
             <Button layoutX="680.0" layoutY="16.0" mnemonicParsing="false" onAction="#onCancelar" prefWidth="70.0" style="-fx-background-color: beige;" text="Cancelar" />
@@ -28,18 +28,16 @@
             <Insets right="10.0" />
          </padding>
       </HBox>
-      <AnchorPane prefHeight="215.0" prefWidth="750.0" style="-fx-background-color: darkgray;">
+      <AnchorPane prefHeight="200.0" prefWidth="750.0" style="-fx-background-color: darkgray;">
          <children>
             <Label layoutX="14.0" layoutY="10.0" text="Numero *" textFill="WHITE" />
             <TextField fx:id="tfNumero" layoutX="14.0" layoutY="31.0" />
-            <Label layoutX="191.0" layoutY="10.0" text="Nome" textFill="WHITE" />
-            <TextField fx:id="tfNome" layoutX="191.0" layoutY="31.0" prefHeight="25.0" prefWidth="280.0" />
-            <Label layoutX="498.0" layoutY="10.0" text="Data *" textFill="WHITE" />
-            <DatePicker fx:id="dpData" layoutX="491.0" layoutY="31.0" />
-            <Label layoutX="13.0" layoutY="115.0" text="Breve descrição" textFill="WHITE" />
-            <TextArea fx:id="taDesc" layoutX="13.0" layoutY="132.0" prefHeight="54.0" prefWidth="725.0" />
-            <Label layoutX="15.0" layoutY="64.0" text="Garçom *" textFill="WHITE" />
-            <ComboBox fx:id="cbGarcom" layoutX="13.0" layoutY="81.0" prefHeight="25.0" prefWidth="725.0" />
+            <Label layoutX="180.0" layoutY="10.0" text="Data *" textFill="WHITE" />
+            <DatePicker fx:id="dpData" layoutX="180.0" layoutY="31.0" prefHeight="25.0" prefWidth="141.0" />
+            <Label layoutX="13.0" layoutY="81.0" text="Breve descrição" textFill="WHITE" />
+            <TextArea fx:id="taDesc" layoutX="13.0" layoutY="106.0" prefHeight="71.0" prefWidth="725.0" />
+            <Label layoutX="337.0" layoutY="10.0" text="Garçom *" textFill="WHITE" />
+            <ComboBox fx:id="cbGarcom" layoutX="337.0" layoutY="31.0" prefHeight="25.0" prefWidth="401.0" />
             <Label layoutX="597.0" layoutY="189.0" text="* Informações obrigatórias" textFill="WHITE" />
          </children>
       </AnchorPane>

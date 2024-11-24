@@ -81,7 +81,16 @@ public class GarcomFormController implements Initializable {
             BufferedImage bufferedImage;
             int id = SingletonDB.getConexao().getMaxPK("garcon", "gar_id");
             bufferedImage = SingletonDB.getConexao().carregarImagem("garcon", "gar_foto", "gar_id", id);
-            imageView.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+            if(bufferedImage!=null)
+                imageView.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+            tfCep.setText(GarcomConsultaController.garcom.getCep());
+            tfEnd.setText(aux.getEndereco());
+            tfUf.setText(aux.getUf());
+            tfCidade.setText(aux.getCidade());
+            tfFone.setText(aux.getFone());
+            tfCpf.setText(aux.getCpf());
+            tfNumero.setText(aux.getNumero());
+            tfId.setText(aux.getId()+"");
         }
         //preencher os dados do garçom
 
