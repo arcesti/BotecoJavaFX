@@ -42,7 +42,7 @@ public class ComandaController {
         idComanda = comanda.getId();
         lbNumCommand.setText(""+id);
         // Atualizar o valor
-        lbValor.setText("" + comanda.getValor());
+        lbValor.setText("" + (comanda.getValor() - new ComandaFormController().valorPago));
     }
 
     public void setNovaComanda() {
@@ -64,6 +64,23 @@ public class ComandaController {
             stage.showAndWait();
             new ComandaPainelController().carregarComandas();
         });
+        lbValor.setText("");
+    }
+
+    public void setComandaVazia() {
+        lbNumCommand.setText("Não há comandas fechadas");
+        lbValor.setText("");
+    }
+
+    public void setComandaFechada(Comanda comanda) {
+        lbNumCommand.setText(""+ comanda.getNumero());
+        lbValor.setText(""+comanda.getValor());
+        anchorPane.setStyle("-fx-background-color: salmon; -fx-background-radius: 16; -fx-border-radius: 16;");
+        idComanda = comanda.getId();
+    }
+
+    public void setComandaVaziaData() {
+        lbNumCommand.setText("Não há comandas nesta data");
         lbValor.setText("");
     }
 }

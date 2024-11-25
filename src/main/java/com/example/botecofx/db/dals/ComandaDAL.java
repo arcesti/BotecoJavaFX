@@ -74,8 +74,11 @@ public class ComandaDAL implements IDAL<Comanda> {
             sql = sql.replace("#7", "" + entidade.getId());
             if (SingletonDB.getConexao().manipular(sql)) {
                 //Apagar os itens
-                if(!SingletonDB.getConexao().manipular("DELETE FROM item WHERE com_id = " + entidade.getId())) {
-                    erro = true;
+                ResultSet resultSet = SingletonDB.getConexao().consultar("SELECT * FROM item WHERE com_id = " + entidade.getId());
+                if(resultSet.next()) {
+                    if (!SingletonDB.getConexao().manipular("DELETE FROM item WHERE com_id = " + entidade.getId())) {
+                        erro = true;
+                    }
                 }
                 for (Comanda.Item item : entidade.getItens()) {
                     System.out.println(item);

@@ -85,13 +85,13 @@
             <TextField fx:id="tfUf" />
          </children>
       </VBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6">
+      <HBox alignment="CENTER" prefHeight="44.0" prefWidth="227.0" spacing="40.0" GridPane.columnSpan="5" GridPane.rowIndex="6">
          <children>
-            <Button fx:id="btConfirmar" mnemonicParsing="false" onAction="#onCofirmar" style="-fx-background-color: royalblue;" text="Confirmar" textFill="WHITE">
+            <Button fx:id="btConfirmar" mnemonicParsing="false" onAction="#onCofirmar" prefHeight="39.0" prefWidth="147.0" style="-fx-background-color: royalblue;" text="Confirmar" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Button fx:id="btCancelar" mnemonicParsing="false" onAction="#onCancelar" style="-fx-background-color: salmon;" text="Cancelar" textFill="WHITE">
+            <Button fx:id="btCancelar" mnemonicParsing="false" onAction="#onCancelar" prefHeight="39.0" prefWidth="144.0" style="-fx-background-color: salmon;" text="Cancelar" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font></Button>

@@ -9,6 +9,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
@@ -20,6 +23,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JasperViewer;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -73,43 +77,64 @@ public class ComandaFormController {
     @FXML
     void onAdd(ActionEvent event) {
         if(produto != null && spQuant.getValue() != 0) {
-            Comanda.Item item = new Comanda.Item(produto, spQuant.getValue());
-            boolean itemExiste = false;
-            for (int i = 0; i < itemLista.size(); i++) {
-                if(tableView.getItems().get(i).produto().getId() == produto.getId()) {
-                    Comanda.Item itemAtt = tableView.getItems().get(i);
-                    itemLista.set(i, new Comanda.Item(produto, itemAtt.quant() + spQuant.getValue()));
-                    itemExiste = true;
+            if(comanda.getStatus() == 'A') {
+                Comanda.Item item = new Comanda.Item(produto, spQuant.getValue());
+                boolean itemExiste = false;
+                for (int i = 0; i < itemLista.size(); i++) {
+                    if (tableView.getItems().get(i).produto().getId() == produto.getId()) {
+                        Comanda.Item itemAtt = tableView.getItems().get(i);
+                        itemLista.set(i, new Comanda.Item(produto, itemAtt.quant() + spQuant.getValue()));
+                        itemExiste = true;
+                    }
                 }
+                if (!itemExiste) {
+                    itemLista.add(item);
+                }
+                spQuant.getValueFactory().setValue(0);
+                setValorComanda();
             }
-            if(!itemExiste) {
-                itemLista.add(item);
+            else {
+                JOptionPane.showMessageDialog(null, "Erro ao incluir produto: comanda finalizada!");
             }
-
-            spQuant.getValueFactory().setValue(0);
-            setValorComanda();
-            //new ComandaPainelController().carregarComandas();
         }
     }
 
     @FXML
     void onCancelar(ActionEvent event) {
-
+        JOptionPane.showMessageDialog(null, "Nenhuma alteração foi realizada!");
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
     }
 
     @FXML
     void onConfirmar(ActionEvent event) {
-        ComandaDAL cmdDal = new ComandaDAL();
-        comanda.delItens();
-        for(Comanda.Item item:itemLista) {
-            comanda.addItem(item);
+        if(comanda.getStatus()!='F') {
+            ComandaDAL cmdDal = new ComandaDAL();
+            comanda.delItens();
+            for (Comanda.Item item : itemLista) {
+                comanda.addItem(item);
+            }
+            cmdDal.alterar(comanda);
         }
-        cmdDal.alterar(comanda);
     }
 
     @FXML
     void onFinalizar(ActionEvent event) {
-
+        if(comanda.getStatus()!='F') {
+            double val;
+            val = Double.parseDouble(lbValor.getText());
+            if (val-valorPago == 0) {
+                comanda.setStatus('F');
+                JOptionPane.showMessageDialog(null, "Comanda numero: "+comanda.getNumero()+" fechada!");
+                ActionEvent ev = null;
+                onConfirmar(ev);
+            } else {
+                JOptionPane.showMessageDialog(null, "Realize o pagamento da comanda para finaliza-la!");
+            }
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Comanda ja finalizada!");
+        }
     }
 
     @FXML
@@ -161,6 +186,9 @@ public class ComandaFormController {
         for(Comanda.Item val:itemLista) {
             valor += val.quant()*val.produto().getPreco();
         }
+        if(valor < 0) {
+            valor = 0;
+        }
         lbValor.setText(""+valor);
         comanda.setValor(valor - valorPago);
     }
@@ -181,28 +209,50 @@ public class ComandaFormController {
         dpData.setValue(comanda.getData());
         tfNumero.setText(comanda.getNumero() + "");
         taDesc.setText(comanda.getDescricao());
+        carregarPagamentos();
+        setValorComanda();
+    }
+
+    public void carregarPagamentos() {
+        valorPago = 0;
+        List<Pagamento>totalPag = new PagamentoDAL().get("com_id = "+comanda.getId());
+        for(Pagamento pagamento1:totalPag) {
+            valorPago+= pagamento1.getValor();
+        }
         setValorComanda();
     }
 
     public void onPagar(ActionEvent actionEvent) {
-        if(cbTipoPagamento.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setHeaderText("Selecione uma forma de pagamento");
-            alert.showAndWait();
+        if(comanda.getStatus()!='F') {
+            if (cbTipoPagamento.getValue() == null) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setHeaderText("Selecione uma forma de pagamento");
+                alert.showAndWait();
+            } else {
+                String pagamento = JOptionPane.showInputDialog(null, "Informe o valor do pagamento:");
+                if (pagamento != null) {
+                    double valor = Double.parseDouble(pagamento);
+                    if(valor>comanda.getValor()-valorPago) {
+                        valor = comanda.getValor()-valorPago;
+                        Pagamento pag = new Pagamento(valor, cbTipoPagamento.getValue(), comanda);
+                        new PagamentoDAL().gravar(pag);
+                    }
+                    else {
+                        Pagamento pag = new Pagamento(valor, cbTipoPagamento.getValue(), comanda);
+                        new PagamentoDAL().gravar(pag);
+                    }
+                    carregarPagamentos();
+                    ActionEvent ev = null;
+                    onConfirmar(ev);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setHeaderText("Pagamento cancelado!");
+                    alert.showAndWait();
+                }
+            }
         }
         else {
-            String pagamento = JOptionPane.showInputDialog(null, "Informe o valor do pagamento:");
-            if (pagamento != null) {
-                double valor = Double.parseDouble(pagamento);
-                Pagamento pag = new Pagamento(valor, cbTipoPagamento.getValue(), comanda);
-                new PagamentoDAL().gravar(pag);
-                valorPago = pag.getValor();
-                setValorComanda();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setHeaderText("Pagamento cancelado!");
-                alert.showAndWait();
-            }
+            JOptionPane.showMessageDialog(null, "Não foi possivel realizar o pagamento: comanda já está fechada!");
         }
     }
 }

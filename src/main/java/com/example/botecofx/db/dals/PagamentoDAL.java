@@ -15,7 +15,7 @@ public class PagamentoDAL implements IDAL<Pagamento> {
     @Override
     public boolean gravar(Pagamento entidade) {
         String sql = """
-                INSERT INTO public.pagamento(
+                INSERT INTO pagamento(
                 	com_id, pag_valor, tpg_id)
                 	VALUES (#1, #2, #3);
                 """;
@@ -83,30 +83,29 @@ public class PagamentoDAL implements IDAL<Pagamento> {
         String sql = "SELECT * FROM pagamento";
         if(!filtro.isEmpty())
             sql+= " WHERE " + filtro;
-        sql+= " ORDER BY pag_id;";
         ResultSet rs = SingletonDB.getConexao().consultar(sql);
         ResultSet cs,ps,gs;
         try
         {
-
-            if(rs.next()){
+            while(rs.next()){
                 cs = SingletonDB.getConexao().consultar("SELECT * from comanda WHERE com_id = " + rs.getInt("com_id"));
                 ps = SingletonDB.getConexao().consultar("SELECT * from tipopgto WHERE tpg_id = " + rs.getInt("tpg_id"));
                 if(cs.next() && ps.next())
                 {
                     gs=SingletonDB.getConexao().consultar("SELECT * FROM garcon WHERE gar_id = " + cs.getInt("gar_id"));
-                    pag.add(new Pagamento(rs.getInt("pag_id"), rs.getDouble("pag_valor"),
-                            new TipoPagamento(ps.getString("tpg_nome")),
-                            new Comanda(cs.getInt("com_numero"),
-                            cs.getString("com_desc"),
-                            cs.getDate("com_data").toLocalDate(),
-                            cs.getInt("com_id"),
-                            cs.getString("com_status").charAt(0),
-                            new Garcom(gs.getString("gar_nome"), gs.getString("gar_cpf"), gs.getString("gar_cep"),
-                            gs.getString("gar_endereco"), gs.getString("gar_numero"), gs.getString("gar_cidade"),
-                            gs.getString("gar_uf"), gs.getString("gar_fone")))));
+                    if(gs.next()) {
+                        pag.add(new Pagamento(rs.getInt("pag_id"), rs.getDouble("pag_valor"),
+                                new TipoPagamento(ps.getString("tpg_nome")),
+                                new Comanda(cs.getInt("com_numero"),
+                                        cs.getString("com_desc"),
+                                        cs.getDate("com_data").toLocalDate(),
+                                        cs.getInt("com_id"),
+                                        cs.getString("com_status").charAt(0),
+                                        new Garcom(gs.getString("gar_nome"), gs.getString("gar_cpf"), gs.getString("gar_cep"),
+                                                gs.getString("gar_endereco"), gs.getString("gar_numero"), gs.getString("gar_cidade"),
+                                                gs.getString("gar_uf"), gs.getString("gar_fone")))));
+                    }
                 }
-
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
