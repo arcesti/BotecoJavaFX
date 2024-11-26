@@ -81,7 +81,6 @@ public class ComandaDAL implements IDAL<Comanda> {
                     }
                 }
                 for (Comanda.Item item : entidade.getItens()) {
-                    System.out.println(item);
                     sql = """
                              INSERT INTO item(
                              	com_id, prod_id, it_quantidade)

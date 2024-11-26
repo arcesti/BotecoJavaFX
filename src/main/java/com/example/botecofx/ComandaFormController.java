@@ -108,14 +108,14 @@ public class ComandaFormController {
 
     @FXML
     void onConfirmar(ActionEvent event) {
+        ComandaDAL cmdDal = new ComandaDAL();
         if(comanda.getStatus()!='F') {
-            ComandaDAL cmdDal = new ComandaDAL();
             comanda.delItens();
             for (Comanda.Item item : itemLista) {
                 comanda.addItem(item);
             }
-            cmdDal.alterar(comanda);
         }
+        cmdDal.alterar(comanda);
     }
 
     @FXML
